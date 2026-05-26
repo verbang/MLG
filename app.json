@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "MLG",
+    "navigationBarBackgroundColor": "#1a936f",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0f2027"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
