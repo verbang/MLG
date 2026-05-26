@@ -1,0 +1,172 @@
+<view class="page-bg"></view>
+
+<view class="container">
+  <!-- Header -->
+  <view class="header">
+    <view class="header-title">马力狗配速计算</view>
+    <view class="header-sub">MLG Pace Calc</view>
+  </view>
+
+  <view class="card">
+    <!-- Tabs -->
+    <view class="tabs">
+      <view
+        class="tab {{currentTab === 'time-to-pace' ? 'active' : ''}}"
+        data-tab="time-to-pace"
+        bindtap="onTabTap"
+      >时间 - 配速</view>
+      <view
+        class="tab {{currentTab === 'pace-to-time' ? 'active' : ''}}"
+        data-tab="pace-to-time"
+        bindtap="onTabTap"
+      >配速 - 时间</view>
+      <view
+        class="tab {{currentTab === 'pace-table' ? 'active' : ''}}"
+        data-tab="pace-table"
+        bindtap="onTabTap"
+      >对照表</view>
+    </view>
+
+    <!-- Distance Selector -->
+    <view class="distance-group" wx:if="{{currentTab !== 'pace-table'}}">
+      <view class="distance-row">
+        <view class="distance-btn {{currentDistance === '42.195' ? 'active' : ''}}" data-key="42.195" bindtap="onDistanceTap">
+          <text class="dist-name">全马</text>
+          <text class="dist-km">42.195km</text>
+        </view>
+        <view class="distance-btn {{currentDistance === '21.0975' ? 'active' : ''}}" data-key="21.0975" bindtap="onDistanceTap">
+          <text class="dist-name">半马</text>
+          <text class="dist-km">21.0975km</text>
+        </view>
+        <view class="distance-btn {{currentDistance === '10' ? 'active' : ''}}" data-key="10" bindtap="onDistanceTap">
+          <text class="dist-name">10K</text>
+          <text class="dist-km">10km</text>
+        </view>
+        <view class="distance-btn {{currentDistance === '5' ? 'active' : ''}}" data-key="5" bindtap="onDistanceTap">
+          <text class="dist-name">5K</text>
+          <text class="dist-km">5km</text>
+        </view>
+      </view>
+      <view class="distance-row custom-row">
+        <view class="distance-btn distance-btn-full {{currentDistance === 'custom' ? 'active' : ''}}" data-key="custom" bindtap="onDistanceTap">
+          <text class="dist-name">自定义</text>
+          <view class="custom-input-wrapper">
+            <input
+              class="custom-dist-inline"
+              type="digit"
+              placeholder="{{customFocused ? '输入距离' : '手动输入'}}"
+              value="{{customDistValue}}"
+              bindinput="onCustomDistInput"
+              bindfocus="onCustomFocus"
+              bindblur="onCustomBlur"
+            />
+            <text class="custom-unit-hint">(km)</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Mode 1: Time to Pace -->
+    <view wx:if="{{currentTab === 'time-to-pace'}}">
+      <view class="input-group">
+        <text class="input-label">目标时间</text>
+        <input class="time-input" type="digit" value="{{targetH}}" data-field="targetH" bindinput="onTargetTimeInput" placeholder="h" />
+        <text class="time-sep">:</text>
+        <input class="time-input" type="digit" value="{{targetM}}" data-field="targetM" bindinput="onTargetTimeInput" placeholder="m" />
+        <text class="time-sep">:</text>
+        <input class="time-input" type="digit" value="{{targetS}}" data-field="targetS" bindinput="onTargetTimeInput" placeholder="s" />
+      </view>
+      <view class="result-area">
+        <view class="result-label">平均配速</view>
+        <view class="result-value">
+          <text>{{paceResult}}</text>
+          <text class="result-unit">/km</text>
+        </view>
+      </view>
+      <!-- Split Table -->
+      <view class="split-table" wx:if="{{splitsTimeToPace.length > 0}}">
+        <view class="split-header">
+          <view class="split-col label-col">距离</view>
+          <view class="split-col">累计时间</view>
+          <view class="split-col">该段配速</view>
+        </view>
+        <view class="split-row {{item.isLast ? 'last-row' : ''}}" wx:for="{{splitsTimeToPace}}" wx:key="label">
+          <view class="split-col label-col">{{item.label}}</view>
+          <view class="split-col">{{item.cumTime}}</view>
+          <view class="split-col">{{item.pace}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Mode 2: Pace to Time -->
+    <view wx:if="{{currentTab === 'pace-to-time'}}">
+      <view class="input-group">
+        <text class="input-label">目标配速</text>
+        <input class="pace-input" type="digit" value="{{paceM}}" data-field="paceM" bindinput="onPaceInput" placeholder="m" />
+        <text class="time-sep">:</text>
+        <input class="pace-input" type="digit" value="{{paceS}}" data-field="paceS" bindinput="onPaceInput" placeholder="s" />
+        <text class="pace-unit">/km</text>
+      </view>
+      <view class="result-area">
+        <view class="result-label">预计完赛时间</view>
+        <view class="result-value">{{timeResult}}</view>
+      </view>
+      <!-- Split Table -->
+      <view class="split-table" wx:if="{{splitsPaceToTime.length > 0}}">
+        <view class="split-header">
+          <view class="split-col label-col">距离</view>
+          <view class="split-col">累计时间</view>
+          <view class="split-col">该段配速</view>
+        </view>
+        <view class="split-row {{item.isLast ? 'last-row' : ''}}" wx:for="{{splitsPaceToTime}}" wx:key="label">
+          <view class="split-col label-col">{{item.label}}</view>
+          <view class="split-col">{{item.cumTime}}</view>
+          <view class="split-col">{{item.pace}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Mode 3: Pace Table -->
+    <view wx:if="{{currentTab === 'pace-table'}}">
+      <view class="pace-range">
+        <view class="pace-range-row">
+          <text class="range-label">配速</text>
+          <picker mode="selector" range="{{paceStartLabels}}" value="{{paceStartIndex}}" bindchange="onPaceStartChange">
+            <view class="picker-box picker-box-styled">
+              <text class="picker-value">{{paceStartLabels[paceStartIndex]}}</text>
+              <text class="picker-unit">/km</text>
+            </view>
+          </picker>
+          <text class="range-sep">-</text>
+          <picker mode="selector" range="{{paceEndLabels}}" value="{{paceEndIndex}}" bindchange="onPaceEndChange">
+            <view class="picker-box picker-box-styled">
+              <text class="picker-value">{{paceEndLabels[paceEndIndex]}}</text>
+              <text class="picker-unit">/km</text>
+            </view>
+          </picker>
+          <text class="range-label">步长</text>
+          <picker mode="selector" range="{{paceStepLabels}}" value="{{paceStepIndex}}" bindchange="onPaceStepChange">
+            <view class="picker-box picker-box-styled">
+              <text class="picker-value">{{paceStepLabels[paceStepIndex]}}</text>
+              <text class="picker-unit">秒</text>
+            </view>
+          </picker>
+        </view>
+      </view>
+      <scroll-view scroll-y="true" class="pace-table-wrapper">
+        <view class="pace-table">
+          <view class="pace-header">
+            <view class="pace-col pace-label-col">配速</view>
+            <view class="pace-col" wx:for="{{paceDistLabels}}" wx:key="*this">{{item}}</view>
+          </view>
+          <view class="pace-row" wx:for="{{paceTableData}}" wx:key="pace">
+            <view class="pace-col pace-label-col highlight">{{item.pace}}/km</view>
+            <view class="pace-col" wx:for="{{item.times}}" wx:key="*this" wx:for-item="t">{{t}}</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <view class="footer">Copyright © 2026 LEO All Rights Reserved.</view>
+</view>
