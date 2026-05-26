@@ -54,7 +54,7 @@
   border: none;
   background: transparent;
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #6c757d;
   text-align: center;
@@ -322,13 +322,14 @@
 }
 .pace-range-row {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
+  padding: 0 4px;
 }
 .range-label {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #6c757d;
   flex-shrink: 0;
@@ -336,12 +337,13 @@
 .range-sep {
   color: #6c757d;
   flex-shrink: 0;
+  font-size: 12px;
 }
 .picker-box {
-  padding: 4px 6px;
+  padding: 4px 4px;
   border: 2px solid #dee2e6;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #212529;
   background: #fff;
@@ -354,15 +356,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px 6px;
+  padding: 6px 4px;
   border: 2px solid #1a936f;
   background: #e8f5e9;
-  min-width: 50px;
+  min-width: 45px;
 }
 
 .picker-value {
   display: block;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #1a936f;
   line-height: 1.2;
@@ -370,10 +372,10 @@
 
 .picker-unit {
   display: block;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   color: #adb5bd;
-  margin-top: 2px;
+  margin-top: 1px;
   line-height: 1.2;
 }
 
